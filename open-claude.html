@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Opening Claude…</title>
+<style>
+  body{font-family:system-ui,-apple-system,Segoe UI,sans-serif;display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0;background:#faf7f2;color:#3b2f25}
+  .box{max-width:420px;padding:32px;text-align:center}
+  a.btn{display:inline-block;margin-top:16px;padding:12px 22px;border-radius:8px;background:#3b2f25;color:#fff;text-decoration:none}
+  small{display:block;margin-top:14px;color:#8a7a6a}
+</style>
+</head>
+<body>
+<div class="box">
+  <h2>Opening Claude Desktop…</h2>
+  <p id="msg">If nothing happens, click the button.</p>
+  <a class="btn" id="go" href="#">Open in Claude</a>
+  <small>You can close this tab once Claude opens.</small>
+</div>
+<script>
+  const p = new URLSearchParams(location.search);
+  const chatId = p.get("c");
+  const parentId = p.get("p");
+  const instr = (p.get("q") || "").trim() ||
+    "Summarize it, tell me what's addressed to me or needs action from me, and suggest next steps.";
+
+  if (!chatId) {
+    document.getElementById("msg").textContent = "No chat ID in this link. Run /checkwithclaude again from Cliq.";
+    document.getElementById("go").style.display = "none";
+  } else {
+    let prompt = "Using the Zoho Cliq connector, read the full conversation in Cliq chat ID " + chatId + ".";
+    if (parentId) prompt += " This is a thread; its parent chat ID is " + parentId + ".";
+    prompt += " Read all messages, including thread replies, before answering. Then: " + instr;
+
+    const target = "claude://claude.ai/new?q=" + encodeURIComponent(prompt);
+    document.getElementById("go").href = target;
+    location.href = target;
+  }
+</script>
+</body>
+</html>
